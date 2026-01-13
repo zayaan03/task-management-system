@@ -2,4 +2,4 @@ streamlit
 streamlit-shadcn-ui
 streamlit-on-hover-tabs
 streamlit-calendar
-EncryptedCookieManager
+streamlit_cookies_manager
