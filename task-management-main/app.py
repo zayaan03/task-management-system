@@ -6,13 +6,13 @@ from auth import register_user, login_user
 import re
 from streamlit_cookies_manager import EncryptedCookieManager
 import streamlit as st
-from tasks import create_task, get_tasks, get_task_by_id, delete_task, update_task
+from tasks import create_task, get_tasks, get_task_by_id, delete_task, update_task, mark_overdue_tasks
 from ui import show_events_by_date
 
 ## page setup
 st.set_page_config(page_title='Task & Project Management System', layout='wide')
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-
+mark_overdue_tasks()
 ## cookie management
 cookies = EncryptedCookieManager(prefix="taskapp_", password="my_secret_key_123")
 
@@ -361,3 +361,4 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
