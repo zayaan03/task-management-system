@@ -12,7 +12,7 @@ from ui import show_events_by_date
 ## page setup
 st.set_page_config(page_title='Task & Project Management System', layout='wide')
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-mark_overdue_tasks()
+# mark_overdue_tasks()
 ## cookie management
 cookies = EncryptedCookieManager(prefix="taskapp_", password="my_secret_key_123")
 
@@ -361,4 +361,5 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
