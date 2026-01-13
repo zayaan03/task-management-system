@@ -107,4 +107,5 @@ def mark_overdue_tasks():
 
     conn.commit()
     conn.close()
-mark_overdue_tasks()
+
+# mark_overdue_tasks()
