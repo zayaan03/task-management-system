@@ -11,7 +11,7 @@ def get_tasks(user_id):
     cursor = conn.cursor()
     cursor.execute(
         '''SELECT id, title, priority, due_date, status FROM tasks
-           WHERE user_id = ?''',(user_id)
+           WHERE user_id = ?''',(user_id,)
     )
     tasks = cursor.fetchall()
     conn.close()
@@ -109,3 +109,4 @@ def mark_overdue_tasks():
     conn.close()
 
 # mark_overdue_tasks()
+
