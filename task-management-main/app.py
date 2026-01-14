@@ -212,7 +212,7 @@ if st.session_state.user:
                             index=valid_status.index(status)
                         )
 
-                    c1, c2,_ = st.columns([1,1,8])
+                    c1, c2,_ = st.columns([1,1,7])
 
                     with c1:
                         if st.button("Cancel"):
@@ -220,7 +220,7 @@ if st.session_state.user:
                             st.rerun()
 
                     with c2:
-                        if st.button("Confirm", type="secondary"):
+                        if ui.button("Confirm"):
                             if not new_title:
                                 st.error("Task name is required")
                             else:
@@ -370,6 +370,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
