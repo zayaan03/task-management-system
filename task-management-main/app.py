@@ -212,7 +212,7 @@ if st.session_state.user:
                             index=valid_status.index(status)
                         )
 
-                    c1, c2,_ = st.columns([1,1,8)
+                    c1, c2,_ = st.columns([1,1,8])
 
                     with c1:
                         if st.button("Cancel"):
@@ -370,6 +370,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
