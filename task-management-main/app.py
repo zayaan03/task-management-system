@@ -1,4 +1,5 @@
 import warnings
+import pathlib
 import datetime as dt
 from st_on_hover_tabs import on_hover_tabs
 import streamlit_shadcn_ui as ui
@@ -17,6 +18,7 @@ init_db()
 mark_overdue_tasks()
 ## cookie management
 cookies = EncryptedCookieManager(prefix="taskapp_", password="my_secret_key_123")
+css_path = pathlib.Path(__file__).parent / "style.css"
 
 if not cookies.ready():
     st.stop()
@@ -46,7 +48,10 @@ def is_valid_email(email):
 ## =======================
 if st.session_state.user:
 
-    st.markdown('<style>' + open('style.css').read() + '</style>', unsafe_allow_html=True)
+    st.markdown(
+    f"<style>{css_path.read_text()}</style>",
+    unsafe_allow_html=True
+    )
 
     st.markdown("""
         <style>
@@ -363,6 +368,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
