@@ -46,7 +46,7 @@ def is_valid_email(email):
 ## =======================
 if st.session_state.user:
 
-    st.markdown('<style>' + open('./style.css').read() + '</style>', unsafe_allow_html=True)
+    st.markdown('<style>' + open('style.css').read() + '</style>', unsafe_allow_html=True)
 
     st.markdown("""
         <style>
@@ -363,6 +363,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
