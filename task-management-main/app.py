@@ -9,7 +9,7 @@ from streamlit_cookies_manager import EncryptedCookieManager
 import streamlit as st
 from tasks import create_task, get_tasks, get_task_by_id, delete_task, update_task, mark_overdue_tasks
 from database import init_db
-from ui import show_events_by_date
+from calendar_func import show_events_by_date, task_to_events
 
 ## page setup
 st.set_page_config(page_title='Task & Project Management System', layout='wide')
@@ -239,7 +239,9 @@ if st.session_state.user:
                             
                         
         if tabs == 'Calendar':
-            show_events_by_date() 
+            tasks = get_tasks(st.session_state.user["id"])
+            events = task_to_events(tasks)
+            calendar_state = show_events_by_date(events)
         
         # ADD TASK BUTTON (NATIVE — RELIABLE) stLayoutWrapper
         if task_btn:
@@ -368,6 +370,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
