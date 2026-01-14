@@ -101,7 +101,7 @@ def mark_overdue_tasks():
         UPDATE tasks
         SET status = 'OVERDUE'
         WHERE due_date < ?
-        AND status NOT IN ('COMPLETE', 'OVERDUE')
+        AND status NOT IN ('COMPLETE', 'OVERDUE', '✅️ COMPLETE')
     """, (today,))
 
 
@@ -109,4 +109,5 @@ def mark_overdue_tasks():
     conn.close()
 
 # mark_overdue_tasks()
+
 
