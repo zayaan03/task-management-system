@@ -298,7 +298,7 @@ if st.session_state.user:
                             st.session_state.show_add_task = False
                             st.success("Task added")
                             st.rerun()
-    elif tabs == 'Ai Assistance': 
+    elif tabs == 'Ai Assist': 
         st.title("Tom")
         st.write('Name of option is {}'.format(tabs)) 
     
@@ -368,6 +368,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
