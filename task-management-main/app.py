@@ -7,6 +7,7 @@ import re
 from streamlit_cookies_manager import EncryptedCookieManager
 import streamlit as st
 from tasks import create_task, get_tasks, get_task_by_id, delete_task, update_task, mark_overdue_tasks
+from database import init_db
 from ui import show_events_by_date
 
 ## page setup
@@ -362,6 +363,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
