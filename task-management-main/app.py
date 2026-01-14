@@ -72,7 +72,7 @@ if st.session_state.user:
     with st.sidebar:
 
         tabs = on_hover_tabs(
-            tabName=['Home', 'Tasks', 'Ai assistance', 'Logout'],
+            tabName=['Home', 'Tasks', 'Ai assist', 'Logout'],
             iconName=['home', 'dashboard', 'economy', 'logout'],
             default_choice=0
         )
@@ -368,6 +368,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
