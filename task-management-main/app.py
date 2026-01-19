@@ -426,10 +426,6 @@ if st.session_state.user:
                                 st.success("Task updated")
                                 st.rerun()
 
-        if tabs == 'Calendar':
-            tasks = get_tasks(st.session_state.user["id"])
-            events = task_to_events(tasks)
-            calendar_state = show_events_by_date(events)
         
         # ADD TASK BUTTON (NATIVE — RELIABLE) stLayoutWrapper
         if task_btn:
@@ -558,6 +554,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
