@@ -7,9 +7,10 @@ from auth import register_user, login_user
 import re
 from streamlit_cookies_manager import EncryptedCookieManager
 import streamlit as st
-from tasks import create_task, get_tasks, get_task_by_id, delete_task, update_task, mark_overdue_tasks
+from tasks import get_monthly_progress, get_task_count, get_checklist_tasks, add_draft_checklist_item, create_task, get_tasks, get_task_by_id, delete_task, update_task, add_checklist_item,  done_checklist, mark_overdue_tasks, get_checklist, calc_task_progress, add_edit_checklist_item
 from database import init_db
 from calendar_func import show_events_by_date, task_to_events
+from dashboard import information_card, project_progress_card, today_tasks_card, monthly_progress_card
 
 ## page setup
 st.set_page_config(page_title='Task & Project Management System', layout='wide')
@@ -37,6 +38,17 @@ if st.session_state.user is None:
             "username": cookies.get("username"),
             "email": None
         }
+if "draft_checklist" not in st.session_state:
+    st.session_state.draft_checklist = []
+
+if "checklist_input" not in st.session_state:
+    st.session_state.checklist_input = ""
+if "edit_checklist_input" not in st.session_state:
+    st.session_state.edit_checklist_input = ""
+
+if "edit_checklist" not in st.session_state:
+    st.session_state.edit_checklist = []
+
 
 ## validation email
 def is_valid_email(email):
@@ -56,15 +68,31 @@ if st.session_state.user:
     st.markdown("""
         <style>
         .task-row {
-            padding: 10px 0;
+            padding: 14px 0;
+            display: flex;
+            align-items: center;
+        }
+        .task-row-1 {
+            padding: 14px 0;
+            display: flex;
+            align-items: center;
+        }
+        .task-row-2 {
+            padding: 14px 0;
+            display: flex;
+            align-items: center;
+        }
+        .task-row-3 {
+            padding: 14px 0;
             display: flex;
             align-items: center;
         }
         .task-row-btn{
-            padding: 2px 0;
+            padding: 0 0;
             display: flex;
             align-items: center;
-                }
+            font-size: 8px;
+        }
         </style>
         """, unsafe_allow_html=True)
 
@@ -78,35 +106,163 @@ if st.session_state.user:
         )
 
 
-    if tabs == 'Home':
-        st.title("Welcome",st.session_state.user["username"])
-        
+   ## ---------------- HOMEPAGE STARTS -----------------------
 
-    ## TASKS PAGE
+    if tabs == 'Home':
+        username = st.session_state.user["username"]
+        st.markdown("<h3>Welcome back, {}</h3>".format(username), unsafe_allow_html=True)
+        st.markdown('<br>', unsafe_allow_html=True)
+        c1, c2 = st.columns(2)
+        with c1:
+            task_count = get_task_count(st.session_state.user["id"])
+            total_tasks, overdue_tasks, todo_tasks, in_progress_tasks, completed_tasks = task_count.values()
+            information_card(total_tasks,overdue_tasks,todo_tasks,in_progress_tasks,completed_tasks)
+            today_task = []
+            for task in tasks_list:
+                if task[3] == str(date.today()):
+                    today_task.append(task[1])
+            today_tasks_card(today_task)  
+        with c2:
+            total_tasks, percent_change, stats = get_monthly_progress(st.session_state.user["id"])
+            monthly_progress_card(total_tasks, percent_change, stats)  
+            task_ids = get_checklist_tasks(st.session_state.user["id"])
+            task_list = []
+            task_pct = []
+            # st.write(task_ids)
+            for id in task_ids:
+                task = get_task_by_id(id[0], st.session_state.user["id"])
+                task_perc = calc_task_progress(id[0])
+                if task_perc:
+                    task_pct.append(task_perc)
+                else:
+                    task_pct.append(0)
+                if task:
+                    task_list.append(task[0])
+            project_progress_card(task_list, task_pct)
+
+
+    ## ---------------- HOMEPAGE ENDS -----------------------  
+        
+  ## --------------- TASKS PAGE STARTS ----------------------
+
     elif tabs == 'Tasks':
         st.title("Tasks Management")
+
+        ## ------------ ADDING TASK BLOCK ---------------------
 
         if "show_add_task" not in st.session_state:
             st.session_state.show_add_task = False
         col1, col2,col3,col4,col5,col6  = st.columns(6)
-        with col1: 
-            tabs = ui.tabs(options=['List', 'Calendar'], default_value='List', key="kanaries")
-        with col6:
-            task_btn = ui.button("➕ Add Task", key='clk_btn')
+
+        ## CREATING COLUMNS FOR TAB AND ADD TASK
+        with st.spinner('Loading...'):
+            with col1: 
+                tabs = ui.tabs(options=['List', 'Calendar'], default_value='List', key="kanaries")
+            with col6:
+                task_btn = ui.button("➕ Add Task", key='clk_btn')
+
+        # ----------- This part creates task ------------------
+        if task_btn:
+            st.session_state.show_add_task = True
+
+        # TASK CARD
+        if st.session_state.show_add_task:
+
+            with st.container(width=900, height=400, border=True):
+                st.subheader("Task Details")
+
+                task_title = st.text_input(
+                    "Task Name",
+                    placeholder="Enter task name"
+                )
+
+                col1, col2, col3 = st.columns(3)
+
+                with col1:
+                    task_due_date = st.date_input("Due Date")
+
+                with col2:
+                    task_priority = st.selectbox(
+                        "Priority",
+                        ["Low", "Normal", "High", "Urgent"],
+                        index=1
+                    )
+
+                with col3:
+                    task_status = st.selectbox(
+                        "Status",
+                        ["⚫ TO DO", "🔵 IN PROGRESS", "✅️ COMPLETE"]
+                    )
+
+                st.subheader('Add Checklist')
+
+                st.text_input(
+                        "Add checklist item",
+                        placeholder="eg. Design UI mockups",
+                        key="checklist_input",
+                        on_change=add_draft_checklist_item
+                    )
+                for i, item in enumerate(st.session_state.draft_checklist):
+                    checked = st.checkbox(
+                        item["title"],
+                        value=item["checked"],
+                        key=f"draft_checkbox_{i}"
+                    )
+                    st.session_state.draft_checklist[i]["checked"] = checked
+                c1, c2,_ = st.columns([1,1,6])
+
+                with c1:
+                    st.markdown('<div class="task-actions">', unsafe_allow_html=True)
+                    cancel_btn = ui.button("Cancel", variant='secondary', key="cancel_task_btn")
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    if cancel_btn:
+                        st.session_state.show_add_task = False
+                        st.session_state.draft_checklist = []
+                        st.rerun()
+
+                with c2:
+                    st.markdown('<div class="task-actions">', unsafe_allow_html=True)
+                    save_btn = ui.button("Save", key="save_task_btn")
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    if save_btn:
+                        if not task_title:
+                            st.error("Task name is required")
+                        else:
+                            task_id =create_task(
+                                st.session_state.user["id"],
+                                task_title,
+                                "",
+                                task_priority,
+                                task_due_date,
+                                task_status
+
+                            )
+                            for item in st.session_state.draft_checklist:
+                                add_checklist_item(task_id, item["title"],st.session_state.user["id"], item["checked"])
+            
+                            st.session_state.show_add_task = False
+                            st.session_state.draft_checklist = []
+                            st.success("Task added")
+                            st.rerun()
+
+        ## ------------ ADD TASK BLOCK ENDS HERE---------------------
+
+
+        ## --------------- THIS BLOCK SHOW TASKS IN LIST ---------------
         if tabs == 'List':
-                    with st.container(border=True):
-                        tasks = get_tasks(st.session_state.user["id"])
-                        if tasks:
+                    with st.container(width=1200,border=True):
+                        if tasks_list:
                             
                             col1, col2, col3, col4, col5, col6 = st.columns([3,2,2,2,1,1])
-                            col1.markdown("**Task Title**")
+                            col1.markdown("**Title**")
                             col3.markdown("**Priority**")
                             col2.markdown("**Due Date**")
                             col4.markdown("**Status**")
                             col5.markdown("Edit")
                             col6.markdown("Delete")
 
-                            for task in tasks:
+                            ## CRUD STARTS
+                            for task in tasks_list:
                                 task_id, title, due_date, priority, status = task
 
                                 with col1:
@@ -119,7 +275,7 @@ if st.session_state.user:
                                         st.write(title)
                                     st.markdown("</div>", unsafe_allow_html=True)
                                 with col2: 
-                                    st.markdown("<div class='task-row'>", unsafe_allow_html=True)
+                                    st.markdown("<div class='task-row-1'>", unsafe_allow_html=True)
                                     if status == 'OVERDUE':
                                         st.write(f':red[{priority}]')
                                     elif status == "✅️ COMPLETE" or status == "COMPLETE":
@@ -128,7 +284,7 @@ if st.session_state.user:
                                         st.write(priority)
                                     st.markdown("</div>", unsafe_allow_html=True)
                                 with col3: 
-                                    st.markdown("<div class='task-row'>", unsafe_allow_html=True)
+                                    st.markdown("<div class='task-row-2'>", unsafe_allow_html=True)
                                     if status == 'OVERDUE':
                                         st.write(f':red[{due_date}]')
                                     elif status == "✅️ COMPLETE" or status == "COMPLETE":
@@ -139,7 +295,7 @@ if st.session_state.user:
 
 
                                 with col4:
-                                    st.markdown("<div class='task-row'>", unsafe_allow_html=True)
+                                    st.markdown("<div class='task-row-3'>", unsafe_allow_html=True)
                                     if status == "TO DO" or status == "⚫ TO DO":
                                         st.badge('TO DO',icon=":material/radio_button_unchecked:", color = 'gray')
                                     elif status == "✅️ COMPLETE" or status == "COMPLETE":
@@ -154,7 +310,7 @@ if st.session_state.user:
 
                                 with col5:
                                     st.markdown("<div class='task-row-btn'>", unsafe_allow_html=True)
-                                    edit_btn = ui.button("Edit", key=f"styled_btn_tailwind-{task_id}", className="bg-yellow-300 text-white h-5")
+                                    edit_btn = st.button("Edit", key=f"edit_btn{task_id}")
                                     st.markdown("</div>", unsafe_allow_html=True)
                                     if edit_btn:
                                             st.session_state.edit_task_id = task_id
@@ -164,18 +320,28 @@ if st.session_state.user:
                                 ## delete task
                                 with col6:
                                     st.markdown("<div class='task-row-btn'>", unsafe_allow_html=True)
-                                    if ui.button("Delete", key=f"tyled_btn_tailwind-{task_id}", className = "bg-red-600 text-white h-5"):
+                                    delete_btn = st.button("X", key=f"delete_btn_{task_id}", type='primary')
+                                    st.markdown("</div>", unsafe_allow_html=True)
+                                    if delete_btn:
                                         delete_task(task_id, st.session_state.user["id"])
                                         st.rerun()
-                                    st.markdown("</div>", unsafe_allow_html=True)
+                                    
 
                         else:
                             st.info("No tasks found.")
+                        ## CRUD ENDS
 
+        ## EDIT BUTTON FUNCTIONALITY
         if st.session_state.get("edit_task_id"):
 
             task_id = st.session_state.edit_task_id
             edit_task = get_task_by_id(task_id, st.session_state.user["id"])
+            if "edit_checklist_loaded" not in st.session_state or st.session_state.edit_checklist_loaded != task_id:
+                st.session_state.edit_checklist = [
+                    {"id": row[0], "title": row[1], "checked": bool(row[2])}
+                    for row in get_checklist(task_id)
+                ]
+                st.session_state.edit_checklist_loaded = task_id
 
             if edit_task:
                 title, description, priority, due_date, status = edit_task
@@ -211,19 +377,34 @@ if st.session_state.user:
                             valid_status,
                             index=valid_status.index(status)
                         )
-
-                    c1, c2,_ = st.columns([1,1,7])
+                    st.subheader('Edit Checklist')
+                    st.text_input(
+                        "Add checklist item",
+                        placeholder="eg. Design UI mockups",
+                        key="edit_checklist_input",
+                        on_change=add_edit_checklist_item
+                    )
+                    for i, item in enumerate(st.session_state.edit_checklist):
+                        st.session_state.edit_checklist[i]["checked"] = st.checkbox(
+                            item["title"],
+                            value=item["checked"],
+                            key=f"edit_checkbox_{i}"
+                        )
+                    c1, c2 = st.columns(2)
 
                     with c1:
                         if st.button("Cancel"):
+                            st.session_state.edit_checklist = []
                             st.session_state.edit_task_id = None
+                            st.session_state.edit_checklist_loaded = None
                             st.rerun()
 
                     with c2:
-                        if ui.button("Confirm"):
+                        if st.button("Confirm", type="secondary"):
                             if not new_title:
                                 st.error("Task name is required")
                             else:
+
                                 update_task(
                                     task_id,
                                     st.session_state.user["id"],
@@ -233,11 +414,17 @@ if st.session_state.user:
                                     new_due_date.isoformat(),         # FIXED
                                     new_status
                                 )
+                                for item in st.session_state.edit_checklist:
+                                    if item["id"] is not None:
+                                        done_checklist(item["id"], item["checked"])
+                                    else:
+                                        add_checklist_item(st.session_state.edit_task_id, item["title"], st.session_state.user["id"], item["checked"])
+                                st.session_state.edit_checklist = [] 
                                 st.session_state.edit_task_id = None
+                                st.session_state.edit_checklist_loaded = None
                                 st.success("Task updated")
                                 st.rerun()
-                            
-                        
+
         if tabs == 'Calendar':
             tasks = get_tasks(st.session_state.user["id"])
             events = task_to_events(tasks)
@@ -370,6 +557,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
