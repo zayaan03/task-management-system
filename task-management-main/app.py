@@ -59,7 +59,7 @@ def is_valid_email(email):
 ## APP (AFTER LOGIN)
 ## =======================
 if st.session_state.user:
-
+    tasks_list = get_tasks(st.session_state.user["id"])
     st.markdown(
     f"<style>{css_path.read_text()}</style>",
     unsafe_allow_html=True
@@ -557,6 +557,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
