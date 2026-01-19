@@ -1,6 +1,7 @@
 import warnings
 import pathlib
 import datetime as dt
+from datetime import date
 from st_on_hover_tabs import on_hover_tabs
 import streamlit_shadcn_ui as ui
 from auth import register_user, login_user
@@ -557,6 +558,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
