@@ -36,6 +36,21 @@ def init_db():
             FOREIGN KEY (user_id) REFERENCES users (id)
         )
     ''')
+    cursor.execute(
+            '''
+            CREATE TABLE IF NOT EXISTS task_checklist(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                task_id INTEGER NOT NULL,
+                is_done INTEGER DEFAULT 0,
+                title TEXT NOT NULL,
+                created_at TEXT,
+                FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY(task_id) REFERENCES tasks(id) ON DELETE CASCADE
+                
+            )
+        '''
+    )
 
 
-
+init_db()
