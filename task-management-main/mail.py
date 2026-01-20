@@ -140,7 +140,8 @@ def run_email_scheduler():
         if email_already_sent(user_id, slot_key):
             continue
 
-        tasks = get_due_tasks(str(user_id))
+        tasks = get_due_tasks(5)
+        st.write(tasks)
         if not tasks:
             st.write('tasks not found')
             continue
@@ -156,6 +157,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
