@@ -1,6 +1,7 @@
 import datetime as dt
 import time
 from auth import conn_db
+from database import init_db
 import smtplib
 from email.message import EmailMessage
 import os
@@ -145,7 +146,9 @@ def run_email_scheduler():
             time.sleep(DELAY_SECONDS)
     
 if __name__ == "__main__":
+    init_db()
     run_email_scheduler()
+
 
 
 
