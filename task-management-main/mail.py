@@ -30,7 +30,7 @@ def get_all_users():
 
 def get_due_tasks(user_id):
     now = dt.datetime.now(PK_TZ)
-    today = now.date()
+    today = now.date().isoformat()
     conn = conn_db()
     cursor = conn.cursor()
     cursor.execute("""
@@ -151,6 +151,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
