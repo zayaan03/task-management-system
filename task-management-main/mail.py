@@ -11,7 +11,7 @@ import streamlit as st
 PK_TZ = pytz.timezone("Asia/Karachi")
 now = dt.datetime.now(PK_TZ)
 today = now.date()
-st.write(today)
+
 EMAILS_PER_MIN = 5
 DELAY_SECONDS = 60 // EMAILS_PER_MIN   
 
@@ -125,7 +125,7 @@ def run_email_scheduler():
     now = dt.datetime.now(PK_TZ)
     today = now.date()
     slot_key = f"{today}_{slot}"
-
+    st.write(today)
     users = get_all_users()  # id, email
     st.write("Users found:", users)
     sent_count = 0
@@ -151,6 +151,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
