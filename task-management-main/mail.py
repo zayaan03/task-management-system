@@ -126,7 +126,7 @@ def run_email_scheduler():
     slot_key = f"{today}_{slot}"
 
     users = get_all_users()  # id, email
-    print("Users found:", users)
+    st.write("Users found:", users)
     sent_count = 0
 
     for user_id, email in users:
@@ -135,13 +135,13 @@ def run_email_scheduler():
             continue
 
         tasks = get_due_tasks(user_id)
-        print("Tasks found:", tasks)
+        st.write("tasks found:", tasks)
         if not tasks:
             continue
 
         body = build_email_body(tasks)
         send_email(email, "Task Reminder", body)
-
+        st,write('email sent')
         log_email_sent(user_id, slot_key)
         sent_count += 1
 
@@ -150,6 +150,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
