@@ -10,6 +10,33 @@ EMAILS_PER_MIN = 5
 DELAY_SECONDS = 60 // EMAILS_PER_MIN   
 
 
+def get_all_users():
+    """
+    Fetch all users (id, email) from the db
+    """
+    conn = conn_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, email FROM users")
+    users = cursor.fetchall()
+    conn.close()
+    return users
+
+
+def get_due_tasks(user_id):
+    today = dt.date.today().isoformat()
+    conn = conn_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+            SELECT title, due_date, status
+            FROM tasks
+            WHERE user_id = ?
+            AND status != '✅️ COMPLETE'
+            AND due_date = ?
+            """,(user_id, today))
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
 def get_current_slot():
     # now = dt.datetime.now()
     # if now.hour == 9 and now.minute <= 5:
@@ -27,77 +54,6 @@ def build_email_body(tasks):
 
     lines.append("\nStay organized.")
     return "\n".join(lines)
-
-def run_email_scheduler():
-    slot = get_current_slot()
-    if not slot:
-        return
-
-    today = dt.date.today().isoformat()
-    slot_key = f"{today}_{slot}"
-
-    users = get_all_users()  # id, email
-
-    sent_count = 0
-
-    for user_id, email in users:
-
-        if email_already_sent(user_id, slot_key):
-            continue
-
-        tasks = get_due_tasks(user_id)
-
-        if not tasks:
-            continue
-
-        body = build_email_body(tasks)
-        send_email(email, "Task Reminder", body)
-
-        log_email_sent(4, slot_key)
-        sent_count += 1
-
-        if sent_count % EMAILS_PER_MIN == 0:
-            time.sleep(60)
-        else:
-            time.sleep(DELAY_SECONDS)
-
-def get_due_tasks(user_id):
-    today = dt.date.today().isoformat()
-    conn = conn_db()
-    cursor = conn.cursor()
-    cursor.execute("""
-            SELECT title, due_date, status
-            FROM tasks
-            WHERE user_id = ?
-            AND status != 'COMPLETE'
-            AND due_date == ?
-            """,(user_id, today))
-    rows = cursor.fetchall()
-    conn.close()
-    return rows
-
-
-
-def email_already_sent(user_id, slot_key):
-    conn = conn_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT 1 FROM email_log WHERE user_id=? AND slot_key=?",
-        (user_id, slot_key)
-    )
-    exists = cursor.fetchone() is not None
-    conn.close()
-    return exists
-
-def log_email_sent(user_id, slot_key):
-    conn = conn_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO email_log (user_id, slot_key, created_at) VALUES (?, ?, ?)",
-        (user_id, slot_key, dt.datetime.now().isoformat())
-    )
-    conn.commit()
-    conn.close()
 
 def handle_new_task(task):
     now = dt.datetime.now()
@@ -127,17 +83,6 @@ def log_email_sent(user_id, slot_key):
     )
     conn.commit()
     conn.close()
-def get_all_users():
-    """
-    Fetch all users (id, email) from the DB.
-    Returns a list of tuples: [(id1, email1), (id2, email2), ...]
-    """
-    conn = conn_db()
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, email FROM users")
-    users = cursor.fetchall()
-    conn.close()
-    return users
 
 
 # ---------- CONFIG ----------
@@ -166,8 +111,42 @@ def send_email(to_email, subject, body):
     except Exception as e:
         print(f"Error sending email to {to_email}: {e}")
     
+def run_email_scheduler():
+    slot = get_current_slot()
+    if not slot:
+        return
+
+    today = dt.date.today().isoformat()
+    slot_key = f"{today}_{slot}"
+
+    users = get_all_users()  # id, email
+
+    sent_count = 0
+
+    for user_id, email in users:
+
+        if email_already_sent(user_id, slot_key):
+            continue
+
+        tasks = get_due_tasks(user_id)
+
+        if not tasks:
+            continue
+
+        body = build_email_body(tasks)
+        send_email(email, "Task Reminder", body)
+
+        log_email_sent(user_id, slot_key)
+        sent_count += 1
+
+        if sent_count % EMAILS_PER_MIN == 0:
+            time.sleep(60)
+        else:
+            time.sleep(DELAY_SECONDS)
+    
 if __name__ == "__main__":
     run_email_scheduler()
+
 
 
 
