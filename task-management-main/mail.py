@@ -6,6 +6,7 @@ import smtplib
 from email.message import EmailMessage
 import os
 import pytz
+import streamlit as st
 
 PK_TZ = pytz.timezone("Asia/Karachi")
 
@@ -113,10 +114,9 @@ def send_email(to_email, subject, body):
             smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             smtp.send_message(msg)
     except Exception as e:
-        error = 1
+        st.error('unable to send email')
     
 def run_email_scheduler():
-    print('Scheduler started')
     slot = get_current_slot()
     if not slot:
         return
@@ -150,6 +150,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
