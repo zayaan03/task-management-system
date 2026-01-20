@@ -160,7 +160,7 @@ if st.session_state.user:
             with col1: 
                 tabs = ui.tabs(options=['List', 'Calendar'], default_value='List', key="kanaries")
             with col6:
-                task_btn = ui.button("➕ Add Task", key='clk_btn')
+                task_btn = ui.button("➕ Add Task", key='task_btn')
 
         # ----------- This part creates task ------------------
         if task_btn:
@@ -187,13 +187,15 @@ if st.session_state.user:
                     task_priority = st.selectbox(
                         "Priority",
                         ["Low", "Normal", "High", "Urgent"],
+                        key = "priority_add",
                         index=1
                     )
 
                 with col3:
                     task_status = st.selectbox(
                         "Status",
-                        ["⚫ TO DO", "🔵 IN PROGRESS", "✅️ COMPLETE"]
+                        ["⚫ TO DO", "🔵 IN PROGRESS", "✅️ COMPLETE"],
+                        key = "status_add"
                     )
 
                 st.subheader('Add Checklist')
@@ -322,7 +324,7 @@ if st.session_state.user:
                                 ## delete task
                                 with col6:
                                     st.markdown("<div class='task-row-btn'>", unsafe_allow_html=True)
-                                    delete_btn = st.button("X", key=f"delete_btn_{task_id}", type='primary')
+                                    delete_btn = st.button("Delete", key=f"delete_btn_{task_id}", type='primary')
                                     st.markdown("</div>", unsafe_allow_html=True)
                                     if delete_btn:
                                         delete_task(task_id, st.session_state.user["id"])
@@ -368,6 +370,7 @@ if st.session_state.user:
                         new_priority = st.selectbox(
                             "Priority",
                             valid_priority,
+                            key = "prirority_add",
                             index=valid_priority.index(priority)
                         )
 
@@ -378,7 +381,8 @@ if st.session_state.user:
                         new_status = st.selectbox(
                             "Status",
                             valid_status,
-                            index=valid_status.index(status)
+                            index=valid_status.index(status),
+                            key = "status_add"
                         )
                     st.subheader('Edit Checklist')
                     st.text_input(
@@ -429,63 +433,7 @@ if st.session_state.user:
                                 st.rerun()
 
         
-        # ADD TASK BUTTON (NATIVE — RELIABLE) stLayoutWrapper
-        if task_btn:
-            st.session_state.show_add_task = True
 
-        # TASK CARD
-        if st.session_state.show_add_task:
-
-            with st.container(border=True):
-                st.subheader("Task Details")
-
-                task_title = st.text_input(
-                    "Task Name",
-                    placeholder="Enter task name"
-                )
-
-                col1, col2, col3 = st.columns(3)
-
-                with col1:
-                    task_due_date = st.date_input("Due Date")
-
-                with col2:
-                    task_priority = st.selectbox(
-                        "Priority",
-                        ["Low", "Normal", "High", "Urgent"],
-                        index=1
-                    )
-
-                with col3:
-                    task_status = st.selectbox(
-                        "Status",
-                        ["⚫ TO DO", "🔵 IN PROGRESS", "✅️ COMPLETE"]
-                    )
-
-                c1, c2 = st.columns(2)
-
-                with c1:
-                    if st.button("Cancel"):
-                        st.session_state.show_add_task = False
-                        st.rerun()
-
-                with c2:
-                    if st.button("Save Task", type="primary"):
-                        if not task_title:
-                            st.error("Task name is required")
-                        else:
-                            create_task(
-                                st.session_state.user["id"],
-                                task_title,
-                                "",
-                                task_priority,
-                                task_due_date,
-                                task_status
-
-                            )
-                            st.session_state.show_add_task = False
-                            st.success("Task added")
-                            st.rerun()
     elif tabs == 'Ai Assist': 
         st.title("Tom")
         st.write('Name of option is {}'.format(tabs)) 
@@ -512,8 +460,8 @@ tab1, tab2 = st.tabs(["Login", "Register"])
 with tab1:
     st.subheader("Login")
 
-    login_username = st.text_input("Username")
-    login_password = st.text_input("Password", type="password")
+    login_username = st.text_input("Username", key='get_username)
+    login_password = st.text_input("Password", type="password", key='get_password')
 
     if st.button("Login"):
         if not login_username or not login_password:
@@ -541,9 +489,9 @@ with tab1:
 with tab2:
     st.subheader("Register")
 
-    reg_username = st.text_input("Enter Username").lower()
-    reg_email = st.text_input("Enter Email")
-    reg_password = st.text_input("Enter Password", type="password")
+    reg_username = st.text_input("Enter Username", key='register_user').lower()
+    reg_email = st.text_input("Enter Email", key='get_mail')
+    reg_password = st.text_input("Enter Password", type="password", key='get_password')
 
     if st.button("Register"):
         if not reg_username or not reg_email or not reg_password:
@@ -556,6 +504,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
