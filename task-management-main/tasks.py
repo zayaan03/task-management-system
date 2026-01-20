@@ -2,7 +2,9 @@ import sqlite3
 from auth import conn_db
 import datetime as dt
 import streamlit as st
+import pytz
 
+PK_TZ = pytz.timezone("Asia/Karachi")
 ##fetch tasks
 
 def get_tasks(user_id):
@@ -97,7 +99,8 @@ def mark_overdue_tasks():
     due date is more than today
     """
 
-    today = dt.date.today().isoformat()
+    now = datetime.now(PK_TZ)
+    today = now.date()
 
     conn = conn_db()
     cursor = conn.cursor()
@@ -321,6 +324,7 @@ def get_monthly_progress(user_id):
     }
 
     return total_tasks, percent_change, stats
+
 
 
 
