@@ -112,9 +112,8 @@ def send_email(to_email, subject, body):
             smtp.starttls()  # secure connection
             smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             smtp.send_message(msg)
-            print(f"Email sent to {to_email}")
     except Exception as e:
-        print(f"Error sending email to {to_email}: {e}")
+        error = 1
     
 def run_email_scheduler():
     print('Scheduler started')
@@ -133,13 +132,11 @@ def run_email_scheduler():
     for user_id, email in users:
 
         if email_already_sent(user_id, slot_key):
-            print('email already sent')
             continue
 
         tasks = get_due_tasks(user_id)
         print("Tasks found:", tasks)
         if not tasks:
-            print("No tasks, skipping")
             continue
 
         body = build_email_body(tasks)
@@ -153,6 +150,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
