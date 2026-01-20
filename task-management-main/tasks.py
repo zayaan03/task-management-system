@@ -285,7 +285,7 @@ def get_monthly_progress(user_id):
     conn = conn_db()
     cursor = conn.cursor()
 
-    # Current month: total tasks and status counts
+    # query for current month progress
     cursor.execute('''
         SELECT status, COUNT(*) FROM tasks
         WHERE user_id = ? AND due_date >= ? AND due_date < ?
@@ -296,7 +296,7 @@ def get_monthly_progress(user_id):
     total_tasks = sum(current_status_counts.values())
     current_completed = current_status_counts.get('COMPLETE', 0) + current_status_counts.get('✅️ COMPLETE', 0)
 
-    # Previous month: completed tasks
+    # query for previous month progress
     cursor.execute('''
         SELECT COUNT(*) FROM tasks
         WHERE user_id = ? AND due_date >= ? AND due_date < ? AND (status = 'COMPLETE' OR status = '✅️ COMPLETE')
@@ -306,13 +306,13 @@ def get_monthly_progress(user_id):
 
     conn.close()
 
-    # Calculate percent change
+    # percent change
     if prev_completed > 0:
         percent_change = int(((current_completed - prev_completed) / prev_completed) * 100)
     else:
         percent_change = 0  # Or handle as "N/A" if preferred
 
-    # Stats dict with counts for current month
+    # stats with counts for current month
     stats = {
         "todo": current_status_counts.get('TO DO', 0) + current_status_counts.get('⚫ TO DO', 0),
         "inprogress": current_status_counts.get('IN PROGRESS', 0) + current_status_counts.get('🔵 IN PROGRESS', 0),
@@ -321,4 +321,5 @@ def get_monthly_progress(user_id):
     }
 
     return total_tasks, percent_change, stats
+
 
