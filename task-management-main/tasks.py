@@ -99,7 +99,7 @@ def mark_overdue_tasks():
     due date is more than today
     """
 
-    now = dt.now(PK_TZ)
+    now = dt.datetime.now(PK_TZ)
     today = now.date()
 
     conn = conn_db()
@@ -324,6 +324,7 @@ def get_monthly_progress(user_id):
     }
 
     return total_tasks, percent_change, stats
+
 
 
 
