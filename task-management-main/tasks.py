@@ -314,13 +314,14 @@ def get_monthly_progress(user_id):
 
     # stats with counts for current month
     stats = {
-        "todo": current_status_counts.get('TO DO', 0) + current_status_counts.get('⚫ TO DO', 0),
-        "inprogress": current_status_counts.get('IN PROGRESS', 0) + current_status_counts.get('🔵 IN PROGRESS', 0),
+        "todo": round(((current_status_counts.get('TO DO', 0) + current_status_counts.get('⚫ TO DO', 0))/total_tasks)*100) if total_tasks > 0 else 0,
+        "inprogress": round(((current_status_counts.get('IN PROGRESS', 0) + current_status_counts.get('🔵 IN PROGRESS', 0))/total_tasks)*100) if total_tasks > 0 else 0,
         "completed": current_completed,
-        "overdue": current_status_counts.get('OVERDUE', 0)
+        "overdue": round((current_status_counts.get('OVERDUE', 0) / total_tasks) *100) if total_tasks > 0 else 0
     }
 
     return total_tasks, percent_change, stats
+
 
 
 
