@@ -324,7 +324,7 @@ if st.session_state.user:
                                 ## delete task
                                 with col6:
                                     st.markdown("<div class='task-row-btn'>", unsafe_allow_html=True)
-                                    delete_btn = st.button("Delete", key=f"delete_btn_{task_id}", type='primary')
+                                    delete_btn = st.button("x", key=f"delete_btn_{task_id}", type='primary')
                                     st.markdown("</div>", unsafe_allow_html=True)
                                     if delete_btn:
                                         delete_task(task_id, st.session_state.user["id"])
@@ -504,6 +504,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
