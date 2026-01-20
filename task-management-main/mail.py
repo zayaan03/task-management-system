@@ -28,11 +28,7 @@ def get_all_users():
     return users
 
 
-conn = conn_db()
-cursor = conn.cursor()
-cursor.execute(
-    '''SELECT * FROM tasks'''
-)
+
 tasks = cursor.fetchall()
 conn.close()
 if tasks:
@@ -123,6 +119,11 @@ def send_email(to_email, subject, body):
         st.error('unable to send email')
     
 def run_email_scheduler():
+    conn = conn_db()
+    cursor = conn.cursor()
+    cursor.execute(
+        '''SELECT * FROM tasks'''
+    )
     slot = get_current_slot()
     if not slot:
         return
@@ -156,6 +157,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
