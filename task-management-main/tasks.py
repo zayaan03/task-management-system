@@ -266,7 +266,7 @@ def calc_task_progress(task_id):
     total, done = result
     return int((done or 0) / total * 100)
 
-@st.cache_data
+
 def get_monthly_progress(user_id):
 
 
@@ -321,5 +321,6 @@ def get_monthly_progress(user_id):
     }
 
     return total_tasks, percent_change, stats
+
 
 
