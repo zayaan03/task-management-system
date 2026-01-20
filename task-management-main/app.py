@@ -113,6 +113,7 @@ if st.session_state.user:
         username = st.session_state.user["username"]
         st.markdown("<h3>Welcome back, {}</h3>".format(username), unsafe_allow_html=True)
         st.markdown('<br>', unsafe_allow_html=True)
+        st.write("Server time:", dt.datetime.now())
         c1, c2 = st.columns(2)
         with c1:
             task_count = get_task_count(st.session_state.user["id"])
@@ -504,6 +505,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
