@@ -117,15 +117,17 @@ def send_email(to_email, subject, body):
         print(f"Error sending email to {to_email}: {e}")
     
 def run_email_scheduler():
+    print('Scheduler started')
     slot = get_current_slot()
     if not slot:
         return
 
-    today = dt.date.today().isoformat()
+    now = dt.datetime.now(PK_TZ)
+    today = now.date()
     slot_key = f"{today}_{slot}"
 
     users = get_all_users()  # id, email
-
+    print("Users found:", users)
     sent_count = 0
 
     for user_id, email in users:
@@ -134,8 +136,9 @@ def run_email_scheduler():
             continue
 
         tasks = get_due_tasks(user_id)
-
+        print("Tasks found:", tasks)
         if not tasks:
+            print("No tasks, skipping")
             continue
 
         body = build_email_body(tasks)
@@ -152,6 +155,7 @@ def run_email_scheduler():
 if __name__ == "__main__":
     init_db()
     run_email_scheduler()
+
 
 
 
