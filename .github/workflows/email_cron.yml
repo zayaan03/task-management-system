@@ -25,6 +25,6 @@ jobs:
       - name: Run email scheduler
         env:
           EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_PASSWORD: ${{ secrets.APP_PASSWORD }}
         run: |
           python mail.py
