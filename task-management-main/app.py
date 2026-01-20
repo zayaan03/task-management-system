@@ -17,7 +17,6 @@ from dashboard import information_card, project_progress_card, today_tasks_card,
 st.set_page_config(page_title='Task & Project Management System', layout='wide')
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 init_db()
-mark_overdue_tasks()
 ## cookie management
 cookies = EncryptedCookieManager(prefix="taskapp_", password="my_secret_key_123")
 css_path = pathlib.Path(__file__).parent / "style.css"
@@ -60,6 +59,7 @@ def is_valid_email(email):
 ## APP (AFTER LOGIN)
 ## =======================
 if st.session_state.user:
+    mark_overdue_tasks()
     tasks_list = get_tasks(st.session_state.user["id"])
     st.markdown(
     f"<style>{css_path.read_text()}</style>",
@@ -504,6 +504,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
