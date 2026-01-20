@@ -22,5 +22,5 @@ jobs:
         env:
           EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
           EMAIL_PASSWORD: ${{ secrets.APP_PASSWORD }}
-        run: |
-          python mail.py
+        run: python task-management-main/mail.py
+  
