@@ -5,6 +5,9 @@ from database import init_db
 import smtplib
 from email.message import EmailMessage
 import os
+import pytz
+
+PK_TZ = pytz.timezone("Asia/Karachi")
 
 
 EMAILS_PER_MIN = 5
@@ -148,6 +151,7 @@ def run_email_scheduler():
 if __name__ == "__main__":
     init_db()
     run_email_scheduler()
+
 
 
 
