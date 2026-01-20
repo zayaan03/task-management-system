@@ -133,6 +133,7 @@ def run_email_scheduler():
     for user_id, email in users:
 
         if email_already_sent(user_id, slot_key):
+            print('email already sent')
             continue
 
         tasks = get_due_tasks(user_id)
@@ -155,6 +156,7 @@ def run_email_scheduler():
 if __name__ == "__main__":
     init_db()
     run_email_scheduler()
+
 
 
 
