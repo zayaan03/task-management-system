@@ -30,18 +30,21 @@ def get_all_users():
 
 def get_due_tasks(user_id):
     now = dt.datetime.now(PK_TZ)
-    today = now.date().isoformat()
+    today = now.date().isoformat()   
     conn = conn_db()
     cursor = conn.cursor()
     cursor.execute("""
-            SELECT title, due_date, status
-            FROM tasks
-            WHERE user_id = ?
-            """,(user_id, ))
+        SELECT title, due_date, status
+        FROM tasks
+        WHERE user_id = ?
+          AND due_date = ?
+          AND status NOT IN ('✅️ COMPLETE', 'COMPLETE')
+    """, (user_id, today))
+    
     rows = cursor.fetchall()
     conn.close()
     return rows
-
+    
 def get_current_slot():
     # now = dt.datetime.now()
     # if now.hour == 9 and now.minute <= 5:
@@ -60,13 +63,6 @@ def build_email_body(tasks):
     lines.append("\nStay organized.")
     return "\n".join(lines)
 
-def handle_new_task(task):
-    now = dt.datetime.now()
-    today = dt.date.today()
-
-    if now.hour >= 9 and task.due_date == today:
-        time.sleep(10)   # short delay
-        send_email(task)
         
 def email_already_sent(user_id, slot_key):
     conn = conn_db()
@@ -149,6 +145,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
