@@ -460,7 +460,7 @@ tab1, tab2 = st.tabs(["Login", "Register"])
 with tab1:
     st.subheader("Login")
 
-    login_username = st.text_input("Username", key='get_username)
+    login_username = st.text_input("Username", key='get_username')
     login_password = st.text_input("Password", type="password", key='get_password')
 
     if st.button("Login"):
@@ -504,6 +504,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
