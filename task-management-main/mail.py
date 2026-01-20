@@ -11,12 +11,12 @@ DELAY_SECONDS = 60 // EMAILS_PER_MIN
 
 
 def get_current_slot():
-    now = dt.datetime.now()
-    if now.hour == 9 and now.minute <= 5:
-        return "morning"
-    if now.hour == 17 and now.minute <= 5:
-        return "evening"
-    return None
+    # now = dt.datetime.now()
+    # if now.hour == 9 and now.minute <= 5:
+    #     return "morning"
+    # if now.hour == 17 and now.minute <= 5:
+    #     return "evening"
+    return 'test'
 
 def build_email_body(tasks):
     lines = ["Here are your task reminders:\n"]
@@ -168,6 +168,7 @@ def send_email(to_email, subject, body):
     
 if __name__ == "__main__":
     run_email_scheduler()
+
 
 
 
