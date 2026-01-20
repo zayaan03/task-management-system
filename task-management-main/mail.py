@@ -28,13 +28,6 @@ def get_all_users():
     return users
 
 
-
-tasks = cursor.fetchall()
-conn.close()
-if tasks:
-    st.write('task found', tasks)
-else:
-    st.write('no tasks found')
 def get_due_tasks(user_id):
     now = dt.datetime.now(PK_TZ)
     today = now.date().isoformat()   
@@ -124,6 +117,12 @@ def run_email_scheduler():
     cursor.execute(
         '''SELECT * FROM tasks'''
     )
+    tasks = cursor.fetchall()
+    conn.close()
+    if tasks:
+        st.write('task found', tasks)
+    else:
+        st.write('no tasks found')
     slot = get_current_slot()
     if not slot:
         return
@@ -157,6 +156,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
