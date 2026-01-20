@@ -12,11 +12,13 @@ from tasks import get_monthly_progress, get_task_count, get_checklist_tasks, add
 from database import init_db
 from calendar_func import show_events_by_date, task_to_events
 from dashboard import information_card, project_progress_card, today_tasks_card, monthly_progress_card
+from mail import run_email_scheduler
 
 ## page setup
 st.set_page_config(page_title='Task & Project Management System', layout='wide')
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 init_db()
+run_email_scheduler()
 ## cookie management
 cookies = EncryptedCookieManager(prefix="taskapp_", password="my_secret_key_123")
 css_path = pathlib.Path(__file__).parent / "style.css"
@@ -504,6 +506,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
