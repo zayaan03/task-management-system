@@ -174,13 +174,14 @@ if st.session_state.user:
 
                 task_title = st.text_input(
                     "Task Name",
-                    placeholder="Enter task name"
+                    placeholder="Enter task name",
+                    key = "task_name_input"
                 )
 
                 col1, col2, col3 = st.columns(3)
 
                 with col1:
-                    task_due_date = st.date_input("Due Date")
+                    task_due_date = st.date_input("Due Date", key='task_date_input')
 
                 with col2:
                     task_priority = st.selectbox(
@@ -350,14 +351,15 @@ if st.session_state.user:
                 with st.container(border=True):
                     st.subheader("Edit Task")
 
-                    new_title = st.text_input("Task Name", value=title)
+                    new_title = st.text_input("Task Name", value=title, key='edit_title')
 
                     col1, col2, col3 = st.columns(3)
 
                     with col1:
                         new_due_date = st.date_input(
                             "Due Date",
-                            dt.datetime.strptime(due_date, "%Y-%m-%d").date()
+                            dt.datetime.strptime(due_date, "%Y-%m-%d").date(),
+                            key='edit_date'
                         )
 
                     with col2:
@@ -391,17 +393,17 @@ if st.session_state.user:
                             value=item["checked"],
                             key=f"edit_checkbox_{i}"
                         )
-                    c1, c2 = st.columns(2)
+                    c1, c2,_ = st.columns([1,1,6])
 
                     with c1:
-                        if st.button("Cancel"):
+                        if st.button("Cancel", key='cancel_edit'):
                             st.session_state.edit_checklist = []
                             st.session_state.edit_task_id = None
                             st.session_state.edit_checklist_loaded = None
                             st.rerun()
 
                     with c2:
-                        if st.button("Confirm", type="secondary"):
+                        if st.button("Confirm", type="secondary", key='confirm_edit'):
                             if not new_title:
                                 st.error("Task name is required")
                             else:
@@ -554,6 +556,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
