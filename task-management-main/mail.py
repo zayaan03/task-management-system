@@ -130,7 +130,7 @@ def run_email_scheduler():
             continue
 
         tasks = get_due_tasks(user_id)
-        st.write("tasks found:", tasks)
+        st.write("tasks found:", tasks[0])
         if not tasks:
             continue
 
@@ -145,6 +145,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
