@@ -153,9 +153,8 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
-if __name__ == "__main__":
-    init_db()
-    run_email_scheduler()
+
+
 
 
 
