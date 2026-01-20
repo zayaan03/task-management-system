@@ -28,6 +28,14 @@ def get_all_users():
     return users
 
 
+conn = conn_db()
+cursor = conn.cursor()
+cursor.execute(
+    '''SELECT * FROM tasks'''
+)
+st.write("ALL TASKS IN DB:", cursor.fetchall())
+conn.close()
+
 def get_due_tasks(user_id):
     now = dt.datetime.now(PK_TZ)
     today = now.date().isoformat()   
@@ -145,6 +153,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
