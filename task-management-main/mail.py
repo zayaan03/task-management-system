@@ -38,8 +38,7 @@ def get_due_tasks(user_id):
             FROM tasks
             WHERE user_id = ?
             AND status != 'COMPLETE'
-            AND due_date = ?
-            """,(user_id, today))
+            """,(user_id, ))
     rows = cursor.fetchall()
     conn.close()
     return rows
@@ -151,6 +150,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
