@@ -3,20 +3,21 @@ import time
 from auth import conn_db
 import smtplib
 from email.message import EmailMessage
-# import sqlite5
+import os
+
 
 EMAILS_PER_MIN = 5
-DELAY_SECONDS = 60 // EMAILS_PER_MIN   # 12 seconds
+DELAY_SECONDS = 60 // EMAILS_PER_MIN   
 
 
 def get_current_slot():
-    # now = dt.datetime.now()
-    # if now.hour == 9 and now.minute <= 5:
-    #     return "morning"
-    # if now.hour == 17 and now.minute <= 5:
-    #     return "evening"
-    # return None
-    return 'test'
+    now = dt.datetime.now()
+    if now.hour == 9 and now.minute <= 5:
+        return "morning"
+    if now.hour == 17 and now.minute <= 5:
+        return "evening"
+    return None
+
 def build_email_body(tasks):
     lines = ["Here are your task reminders:\n"]
 
@@ -142,8 +143,8 @@ def get_all_users():
 # ---------- CONFIG ----------
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-EMAIL_ADDRESS = "zayaanscherg06@gmail.com"
-EMAIL_PASSWORD = "edcx ajpq sodf cuhk"  # Use Gmail App Password
+EMAIL_ADDRESS = os.environ.get("EMAIL_ADDRESS")
+EMAIL_PASSWORD = os.environ.get("APP_PASSWORD")  
 # ----------------------------
 
 def send_email(to_email, subject, body):
@@ -165,6 +166,8 @@ def send_email(to_email, subject, body):
     except Exception as e:
         print(f"Error sending email to {to_email}: {e}")
     
-run_email_scheduler()
+if __name__ == "__main__":
+    run_email_scheduler()
+
 
 
