@@ -120,7 +120,6 @@ def run_email_scheduler():
     now = dt.datetime.now(PK_TZ)
     today = now.date()
     slot_key = f"{today}_{slot}"
-    st.write(today)
     users = get_all_users()  # id, email
     sent_count = 0
 
@@ -130,7 +129,8 @@ def run_email_scheduler():
             continue
         userid = int(user_id)
         tasks = get_due_tasks(userid)
-        st.write(tasks)
+        if tasks:
+            st.write('task', tasks)
         if not tasks:
             st.write('tasks not found')
             continue
@@ -146,6 +146,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
