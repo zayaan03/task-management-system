@@ -454,6 +454,7 @@ if st.session_state.user:
         
 
     elif tabs == 'Ai assist': 
+        st.write('showing')
         ai_assistant(int(st.session_state.user["id"]))
     
     ## logout 
@@ -522,6 +523,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
