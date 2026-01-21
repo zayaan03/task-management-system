@@ -112,17 +112,6 @@ def send_email(to_email, subject, body):
         st.error('unable to send email')
     
 def run_email_scheduler():
-    conn = conn_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        '''SELECT * FROM tasks'''
-    )
-    tasks = cursor.fetchall()
-    conn.close()
-    if tasks:
-        st.write('task found', tasks)
-    else:
-        st.write('no tasks found')
     slot = get_current_slot()
     if not slot:
         return
@@ -132,7 +121,7 @@ def run_email_scheduler():
     slot_key = f"{today}_{slot}"
     st.write(today)
     users = get_all_users()  # id, email
-    st.write("Users found:", users)
+    st.write("Users found:", users[0])
     sent_count = 0
 
     for user_id, email in users:
@@ -157,6 +146,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
