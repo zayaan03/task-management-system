@@ -175,8 +175,8 @@ if st.session_state.user:
 
         ## CREATING COLUMNS FOR TAB AND ADD TASK
         with st.spinner('Loading...'):
-            with col1: 
-                tabs = ui.tabs(options=['List'], default_value='List', key="kanaries")
+            # with col1: 
+            #     tabs = ui.tabs(options=['List'], default_value='List', key="kanaries")
             with col6:
                 task_btn = ui.button("➕ Add Task", key='task_btn')
 
@@ -271,8 +271,8 @@ if st.session_state.user:
 
 
         ## --------------- THIS BLOCK SHOW TASKS IN LIST ---------------
-        if tabs == 'List':
-                    with st.container(width=1200,border=True):
+        # if tabs == 'List':
+        with st.container(width=1200,border=True):
                         if tasks_list:
                             
                             col1, col2, col3, col4, col5, col6 = st.columns([3,2,2,2,1,1])
@@ -522,6 +522,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
