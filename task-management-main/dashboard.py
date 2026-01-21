@@ -460,7 +460,7 @@ def monthly_progress_card(total_tasks, percent_change, stats):
       <div class="card">
         <div class="header">
             <div class="title">Monthly Progress</div>
-            <div class="change">+{percent_change}% more than previous month</div>
+            <div class="change">{percent_change}% more than previous month</div>
         </div>
 
         <div class="main">
@@ -503,4 +503,5 @@ def monthly_progress_card(total_tasks, percent_change, stats):
     </body>
     </html>
     """, height=285)
+
 
