@@ -13,6 +13,7 @@ from database import init_db
 from calendar_func import show_events_by_date, task_to_events
 from dashboard import information_card, project_progress_card, today_tasks_card, monthly_progress_card
 from mail import run_email_scheduler
+import pytz
 
 ## page setup
 st.set_page_config(page_title='Task & Project Management System', layout='wide')
@@ -522,6 +523,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
