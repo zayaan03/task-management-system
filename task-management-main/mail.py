@@ -121,6 +121,7 @@ def run_email_scheduler():
     today = now.date()
     slot_key = f"{today}_{slot}"
     users = get_all_users()  # id, email
+    st.write(users)
     sent_count = 0
 
     for user_id, email in users:
@@ -146,6 +147,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
