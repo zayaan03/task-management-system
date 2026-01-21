@@ -64,26 +64,26 @@ def build_email_body(tasks):
     return "\n".join(lines)
 
         
-def email_already_sent(user_id, slot_key):
-    conn = conn_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT 1 FROM email_log WHERE user_id=? AND slot_key=?",
-        (user_id, slot_key)
-    )
-    exists = cursor.fetchone() is not None
-    conn.close()
-    return exists
+# def email_already_sent(user_id, slot_key):
+#     conn = conn_db()
+#     cursor = conn.cursor()
+#     cursor.execute(
+#         "SELECT 1 FROM email_log WHERE user_id=? AND slot_key=?",
+#         (user_id, slot_key)
+#     )
+#     exists = cursor.fetchone() is not None
+#     conn.close()
+#     return exists
 
-def log_email_sent(user_id, slot_key):
-    conn = conn_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO email_log (user_id, slot_key, created_at) VALUES (?, ?, ?)",
-        (user_id, slot_key, dt.datetime.now().isoformat())
-    )
-    conn.commit()
-    conn.close()
+# def log_email_sent(user_id, slot_key):
+#     conn = conn_db()
+#     cursor = conn.cursor()
+#     cursor.execute(
+#         "INSERT INTO email_log (user_id, slot_key, created_at) VALUES (?, ?, ?)",
+#         (user_id, slot_key, dt.datetime.now().isoformat())
+#     )
+#     conn.commit()
+#     conn.close()
 
 
 # ---------- CONFIG ----------
@@ -126,9 +126,9 @@ def run_email_scheduler():
 
     for user_id, email in users:
 
-        if email_already_sent(user_id, slot_key):
-            st.write('email already sent')
-            continue
+        # if email_already_sent(user_id, slot_key):
+        #     st.write('email already sent')
+        #     continue
         userid = int(user_id)
         tasks = get_due_tasks(userid)
         st.write('task',tasks)
@@ -139,7 +139,7 @@ def run_email_scheduler():
         body = build_email_body(tasks)
         send_email(email, "Task Reminder", body)
         st.write('email sent')
-        log_email_sent(user_id, slot_key)
+        # log_email_sent(user_id, slot_key)
         sent_count += 1
 
         if sent_count % EMAILS_PER_MIN == 0:
@@ -147,6 +147,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
