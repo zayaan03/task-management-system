@@ -89,8 +89,8 @@ def build_email_body(tasks):
 # ---------- CONFIG ----------
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-EMAIL_ADDRESS = os.environ.get("EMAIL_ADDRESS")
-EMAIL_PASSWORD = os.environ.get("APP_PASSWORD")  
+EMAIL_ADDRESS = "zayaanscherg06@gmail.com"
+EMAIL_PASSWORD = "edcx ajpq sodf cuhk"  
 # ----------------------------
 
 def send_email(to_email, subject, body):
@@ -147,6 +147,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
