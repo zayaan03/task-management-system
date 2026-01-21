@@ -25,6 +25,22 @@ css_path = pathlib.Path(__file__).parent / "style.css"
 if not cookies.ready():
     st.stop()
 
+PK_TZ = pytz.timezone("Asia/Karachi")
+
+today = dt.datetime.now(PK_TZ).date()
+
+# initialize session state
+if "last_email_date" not in st.session_state:
+    st.session_state.last_email_date = None
+
+# run email reminder only once per day
+if st.session_state.last_email_date != today:
+    try:
+        run_email_scheduler()
+        st.session_state.last_email_date = today
+        print("Email reminder executed successfully")
+    except Exception as e:
+        print("Email reminder failed:", e)
 # session state initialize
 if 'user' not in st.session_state:
     st.session_state.user = None
@@ -506,6 +522,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
