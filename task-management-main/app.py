@@ -128,7 +128,6 @@ if st.session_state.user:
    ## ---------------- HOMEPAGE STARTS -----------------------
 
     if tabs == 'Home':
-        run_email_scheduler()
         username = st.session_state.user["username"]
         st.markdown("<h3>Welcome back, {}</h3>".format(username), unsafe_allow_html=True)
         st.markdown('<br>', unsafe_allow_html=True)
@@ -523,6 +522,7 @@ with tab2:
                 st.success("Registration successful. Please Login")
             else:
                 st.error("Username or email already exists")
+
 
 
 
