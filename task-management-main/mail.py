@@ -108,9 +108,9 @@ def send_email(to_email, subject, body):
             smtp.starttls()  # secure connection
             smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             smtp.send_message(msg)
-            st.success('email sent success')
+     
     except Exception as e:
-        st.error('unable to send email')
+        error = 1
     
 def run_email_scheduler():
     slot = get_current_slot()
@@ -121,7 +121,6 @@ def run_email_scheduler():
     today = now.date()
     slot_key = f"{today}_{slot}"
     users = get_all_users()  # id, email
-    st.write(users)
     sent_count = 0
 
     for user_id, email in users:
@@ -131,14 +130,13 @@ def run_email_scheduler():
         #     continue
         userid = int(user_id)
         tasks = get_due_tasks(userid)
-        st.write('task',tasks)
+
         if not tasks:
-            st.write('tasks not found')
             continue
 
         body = build_email_body(tasks)
         send_email(email, "Task Reminder", body)
-        st.write('email sent')
+        # st.write('email sent')
         # log_email_sent(user_id, slot_key)
         sent_count += 1
 
@@ -147,6 +145,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
