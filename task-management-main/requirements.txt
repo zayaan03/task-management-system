@@ -4,3 +4,4 @@ streamlit-on-hover-tabs
 streamlit-calendar
 streamlit_cookies_manager
 pytz
+google
