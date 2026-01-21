@@ -108,6 +108,7 @@ def send_email(to_email, subject, body):
             smtp.starttls()  # secure connection
             smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             smtp.send_message(msg)
+            st.success('email sent success')
     except Exception as e:
         st.error('unable to send email')
     
@@ -145,6 +146,7 @@ def run_email_scheduler():
         else:
             time.sleep(DELAY_SECONDS)
     
+
 
 
 
