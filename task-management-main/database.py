@@ -1,55 +1,24 @@
-import sqlite3
+from supabase import Client, create_client
+import os
+from dotenv import load_dotenv
 
-def init_db():
-    conn = sqlite3.connect('task-management.db')
-    conn.execute("PRAGMA foreign_keys = ON;")
-    cursor = conn.cursor()
+load_dotenv()
 
-    # users Table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL
-        )
-    ''')
+class Database():
+    '''
+    This class creates a single connection with Supabase client (Database)
+    which is used in all CRUD functions
+    '''
+    _instance = None
 
-    # tasks Table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS tasks (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            title TEXT NOT NULL,
-            description TEXT,
-            priority TEXT DEFAULT 'Normal',
-            due_date TEXT,
-            status TEXT DEFAULT 'TO DO',
-            FOREIGN KEY (user_id) REFERENCES users (id)
-        )
-    ''')
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS email_log (
-            user_id INTEGER,
-            slot_key TEXT,
-            created_at TEXT,
-            FOREIGN KEY (user_id) REFERENCES users (id)
-        )
-    ''')
-    cursor.execute(
-            '''
-            CREATE TABLE IF NOT EXISTS task_checklist(
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER NOT NULL,
-                task_id INTEGER NOT NULL,
-                is_done INTEGER DEFAULT 0,
-                title TEXT NOT NULL,
-                created_at TEXT,
-                FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
-                FOREIGN KEY(task_id) REFERENCES tasks(id) ON DELETE CASCADE
-                
-            )
-        '''
-    )
-
-
+    def __new__(cls):
+        if cls._instance == None:
+            cls._instance = super().__new__(cls)
+            url = os.getenv('SUPABASE_URL')
+            key = os.getenv('SUPABASE_KEY')
+            if not url or not key:
+                raise ValueError('SUPABASE_URL and SUPABASE_KEY must be set in .env')
+            cls._instance.client: Client = create_client(url, key)
+        return cls._instance
+    def get_client(self) -> Client:
+        return self.client
