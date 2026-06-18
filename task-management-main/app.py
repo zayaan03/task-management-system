@@ -858,7 +858,7 @@ with tab1:
         if not login_username or not login_password:
             st.error("Please fill in all fields")
         else:
-            user = auth().login(login_username, login_password)
+            user = auth.login(login_username, login_password)
             if user:
                 st.session_state.user = user
                 st.session_state['logged_in'] = True
