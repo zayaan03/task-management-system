@@ -37,18 +37,18 @@ if 'auth' not in st.session_state:
     st.session_state['auth'] = Auth
 
 if 'taskmanager' not in st.session_state:
-    st.session_state['taskmanager'] = TaskManagement()
+    st.session_state['taskmanager'] = TaskManagement
 
 if 'subtasks_manage' not in st.session_state:
-    st.session_state['subtasks_manage'] = SubtaskManagement()
+    st.session_state['subtasks_manage'] = SubtaskManagement
 
 if 'ai_features' not in st.session_state:
-    st.session_state['ai_features'] = AIFeatures()
+    st.session_state['ai_features'] = AIFeatures
 
 auth = st.session_state['auth']
 
 if 'analytics' not in st.session_state:
-    st.session_state['analytics'] = Analytics()
+    st.session_state['analytics'] = Analytics
 
 if 'user' not in st.session_state:
     st.session_state.user = None
