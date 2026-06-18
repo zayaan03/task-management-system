@@ -1,49 +1,69 @@
 import sqlite3
 import hashlib
+from database import Database
 
-##encrypting password
-def hash_pass(password):
-    return hashlib.sha256(password.encode()).hexdigest()
+class User():
+    """Represents an authenticated user."""
+    def __init__(self, user_id: str, username: str, email: str ):
+        self.user_id = user_id
+        self.username = username
+        self.email = email
+    
+    def __repr__(self):
+        return f"User(id={self.user_id},username='{self.username}', email='{self.email}')"
+
+class Auth():
+    """
+    Handles register and login with Supabase users table.
+    """
+    def __init__(self, db = Database()):
+        self.client = db.get_client()
+    ##encrypting password
+    @staticmethod
+    def _hash_pass(password):
+        return hashlib.sha256(password.encode()).hexdigest()
+    def register_user(self, username: str, email: str, password: str) -> bool:
+        """
+        Handles user registeration, returns True on success,
+        Returns False if username or email already exists
+        """
+        try:
+            response = self.client.table('users').insert(
+                {
+                    'username': username,
+                    'email': email,
+                    'password': self._hash_pass(password)                   
+
+                }
+            ).execute()
+
+            return len(response.data) > 0
+        except Exception:
+            return False
+
+    def login(self, username: str, password: str):
+        """
+        Returns a User object on success, None on failure.
+        """
+
+        response = (self.client.table('users').
+                    select('id,username,email').
+                    eq('username', username).
+                    eq('password', self._hash_pass(password))
+                    .execute()
+
+                    )
+        if response.data:
+            row = response.data
+            return User(
+                user_id = row[0]['id'],
+                username = row[0]['username'],
+                email = row[0]['email']
+            )
+        
+        return None
+            
 
 
-##db connection
-def conn_db():
-    conn = sqlite3.connect('task-management.db')
-    conn.execute('PRAGMA foreign_keys = ON;')
-    return conn
 
-##signup block
-def register_user(username, email, password):
-    conn = conn_db()
-    cursor = conn.cursor()
 
-    try:
-        cursor.execute("""
-            INSERT INTO users (username, email, password)
-            VALUES (?, ?, ?)
-        """, (username, email, hash_pass(password)))
-
-        conn.commit()
-        return True
-
-    except sqlite3.IntegrityError:
-        return False
-
-    finally:
-        conn.close()
-
-##login block
-def login_user(username, password):
-    conn = conn_db()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT id, username, email
-        FROM users
-        WHERE username = ? AND password = ?
-    """, (username, hash_pass(password)))
-
-    user = cursor.fetchone()
-    conn.close()
-
-    return user
