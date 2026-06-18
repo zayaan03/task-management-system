@@ -4,5 +4,7 @@ streamlit-on-hover-tabs
 streamlit-calendar
 streamlit_cookies_manager
 pytz
+supabase
+dotenv
 google-genai>=0.12.0
 
