@@ -12,7 +12,7 @@ load_dotenv()
 class AIFeatures():
 
     def __init__(self):
-        self.client = genai.Client(api_key = os.getenv('GEMINI_API_KEY'))
+        self.client = genai.Client(api_key = st.secrets['GEMINI_API_KEY'])
         self.model = 'gemini-2.0-flash'
     
     def get_task_breakdown(self, task_title: str):
