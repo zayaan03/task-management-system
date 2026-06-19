@@ -32,6 +32,11 @@ today = dt.datetime.now(PK_TZ).date()
 if "last_email_date" not in st.session_state:
     st.session_state.last_email_date = None
 
+if 'db' not in st.session_state:
+    st.session_state['db'] = Database()
+
+db = st.session_state['db']
+
 ## session state initialize for functions
 if 'auth' not in st.session_state:
     st.session_state['auth'] = Auth
