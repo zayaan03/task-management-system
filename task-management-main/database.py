@@ -2,7 +2,7 @@ from supabase import Client, create_client
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 class Database():
     '''
@@ -14,8 +14,8 @@ class Database():
     def __new__(cls):
         if cls._instance == None:
             cls._instance = super().__new__(cls)
-            url = os.getenv('SUPABASE_URL')
-            key = os.getenv('SUPABASE_KEY')
+            url = st.secrets["SUPABASE_URL"]
+            key = st.secrets["SUPABASE_KEY"]
             if not url or not key:
                 raise ValueError('SUPABASE_URL and SUPABASE_KEY must be set in .env')
             cls._instance.client: Client = create_client(url, key)
