@@ -5,6 +5,7 @@ from datetime import date
 from st_on_hover_tabs import on_hover_tabs
 import streamlit_shadcn_ui as ui
 from auth import Auth, User
+from database import Database
 import re
 from streamlit_cookies_manager import EncryptedCookieManager
 import streamlit as st
